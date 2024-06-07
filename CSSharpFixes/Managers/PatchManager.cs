@@ -23,13 +23,6 @@ public class PatchManager
         LoadCommonPatches();
     }
     
-    public void InitPatches()
-    {
-        PerformPatch("FixWaterFloorJump");
-        PerformPatch("WaterLevelGravity");
-        PerformPatch("CategorizeUnderwater");
-    }
-    
     public void Stop()
     {
         foreach (Patch patch in _patches)
@@ -56,11 +49,15 @@ public class PatchManager
             // Linux: 	 mov rdx, [r12+8] 	->  mov rdx, rbx
             AddServerPatch("CPhysBox_Use", "CPhysBox_Use", "48 89 DA 90 90");
             
-            // BotNavIgnore Fix
+            // Server Movement Unlocker
             AddServerPatch("ServerMovementUnlock", "ServerMovementUnlock", "90 90 90 90 90 90");
             
-            // Server Movement Unlocker
-            AddServerPatch("BotNavIgnore", "BotNavIgnore", "E9 15 00 00 00");
+            // BotNavIgnore Fix
+            // According to src code of CS2Fixes, we should run BotNavIgnore patch 3 times on Linux???
+            // Commented out since it seems to cause crashes every time I test it...
+            //AddServerPatch("BotNavIgnore", "BotNavIgnore", "E9 15 00 00 00");
+            //AddServerPatch("BotNavIgnore2", "BotNavIgnore", "E9 15 00 00 00");
+            //AddServerPatch("BotNavIgnore3", "BotNavIgnore", "E9 15 00 00 00");
         }
         else
         {
@@ -75,11 +72,12 @@ public class PatchManager
             // Windows:  mov r8, [rdi+8]  	->  mov r8, rbx
             AddServerPatch("CPhysBox_Use", "CPhysBox_Use", "49 89 D8 90");
             
-            // BotNavIgnore Fix
+            // Server Movement Unlocker
             AddServerPatch("ServerMovementUnlock", "ServerMovementUnlock", "EB");
             
-            // Server Movement Unlocker
-            AddServerPatch("BotNavIgnore", "BotNavIgnore", "E9 2C 00 00 00 90");
+            // BotNavIgnore Fix
+            // Commented out since it seems to cause crashes every time I test it...
+            //AddServerPatch("BotNavIgnore", "BotNavIgnore", "E9 2C 00 00 00 90");
         }
     }
     
@@ -102,6 +100,16 @@ public class PatchManager
         }
         
         _patches[patch].PerformPatch();
+        
+        // Commented out since it seems to cause crashes every time I test it...
+        // According to src code of CS2Fixes, we should run BotNavIgnore patch 3 times on Linux???
+        /* if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && name == "BotNavIgnore")
+        {
+            int patch2 = _patches.FindIndex(patch2 => patch2.GetPatchName() == "BotNavIgnore2");
+            _patches[patch2].PerformPatch();
+            int patch3 = _patches.FindIndex(patch3 => patch3.GetPatchName() == "BotNavIgnore3");
+            _patches[patch3].PerformPatch();
+        } */
     }
     
     public void UndoPatch(string name)
@@ -115,6 +123,16 @@ public class PatchManager
                 patch);
             return;
         }
+        
+        // Commented out since it seems to cause crashes every time I test it...
+        // According to src code of CS2Fixes, we should run BotNavIgnore patch 3 times on Linux???
+        /* if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && name == "BotNavIgnore")
+        {
+            int patch3 = _patches.FindIndex(patch3 => patch3.GetPatchName() == "BotNavIgnore3");
+            _patches[patch3].UndoPatch();
+            int patch2 = _patches.FindIndex(patch2 => patch2.GetPatchName() == "BotNavIgnore2");
+            _patches[patch2].UndoPatch();
+        } */
         
         _patches[patch].UndoPatch();
     }
