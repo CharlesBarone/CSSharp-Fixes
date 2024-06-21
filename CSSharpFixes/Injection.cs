@@ -11,6 +11,7 @@ public class Injection : IPluginServiceCollection<CSSharpFixes>
     {
         serviceCollection.AddSingleton<ModuleInformation>();
         serviceCollection.AddSingleton<GameDataManager>();
+        serviceCollection.AddSingleton<DetourManager>();
         serviceCollection.AddSingleton<PatchManager>();
         serviceCollection.AddSingleton<FixManager>();
         serviceCollection.AddSingleton<Configuration>();

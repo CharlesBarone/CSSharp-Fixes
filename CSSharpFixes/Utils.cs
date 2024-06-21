@@ -140,4 +140,19 @@ public class Utils
             Memory.WinMemoryUtils.PatchBytesAtAddress(address, bytes.ToArray(), patchSize);
         }
     }
+    
+    public static List<byte> FloatToByteArray(float value)
+    {
+        byte[] bytes = BitConverter.GetBytes(value);
+        return bytes.ToList();
+    }
+    
+    public static unsafe TDest ReinterpretCast<TSource, TDest>(TSource source)
+    {
+        var sourceRef = __makeref(source);
+        var dest = default(TDest);
+        var destRef = __makeref(dest);
+        *(IntPtr*)&destRef = *(IntPtr*)&sourceRef;
+        return __refvalue(destRef, TDest);
+    }
 }
