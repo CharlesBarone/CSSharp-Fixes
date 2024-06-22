@@ -1,10 +1,37 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 
 namespace CSSharpFixes;
 
 public class Utils
 {
+    public static T BuildMemoryFunction<T>(string signatureName) where T : BaseMemoryFunction
+    {
+        if (string.IsNullOrEmpty(signatureName))
+            throw new ArgumentException("Signature name must not be null or empty", nameof(signatureName));
+        
+        string? signature = null;
+        try
+        {
+            signature = GameData.GetSignature(signatureName);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to build memory function of type {typeof(T).FullName}. There was an error attempting to get the signature '{signatureName}'.", ex);
+        }
+
+        if (string.IsNullOrEmpty(signature))
+            throw new InvalidOperationException($"Failed to build memory function of type {typeof(T).FullName}. The signature '{signatureName}' was found but is empty.");
+
+        object? instance = Activator.CreateInstance(typeof(T), signature);
+        
+        if (instance == null)
+            throw new InvalidOperationException($"Failed to build memory function of type {typeof(T).FullName}. The instance of type {typeof(T).FullName} was null.");
+        
+        return (T)instance;
+    }
     
     // Mimic the behavior of the C++ function std::vector<int16_t> CGameConfig::HexToByte(std::string_view src)
     public static List<byte> HexToByte(string src)
@@ -145,6 +172,13 @@ public class Utils
     {
         byte[] bytes = BitConverter.GetBytes(value);
         return bytes.ToList();
+    }
+    
+    public static byte[] ReadMemory(IntPtr address, int size)
+    {
+        byte[] buffer = new byte[size];
+        Marshal.Copy(address, buffer, 0, size);
+        return buffer;
     }
     
     public static unsafe TDest ReinterpretCast<TSource, TDest>(TSource source)

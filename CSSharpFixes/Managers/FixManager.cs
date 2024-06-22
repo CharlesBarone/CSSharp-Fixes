@@ -1,9 +1,10 @@
-﻿using CSSharpFixes.Fixes;
+﻿using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
+using CSSharpFixes.Fixes;
 using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes.Managers;
 
-public class FixManager(PatchManager patchManager, ILogger<CSSharpFixes> logger)
+public class FixManager(PatchManager patchManager, DetourManager detourManager, ILogger<CSSharpFixes> logger)
 {
     private List<BaseFix> _fixes = new();
 
@@ -27,6 +28,7 @@ public class FixManager(PatchManager patchManager, ILogger<CSSharpFixes> logger)
         if(index < 0 || index >= _fixes.Count) return;
 
         foreach(string patchName in _fixes[index].PatchNames) patchManager.PerformPatch(patchName);
+        foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StartHandler(detourHandlerName);
     }
 
     private void StopFix(int index)
@@ -34,6 +36,7 @@ public class FixManager(PatchManager patchManager, ILogger<CSSharpFixes> logger)
         if(index < 0 || index >= _fixes.Count) return;
         
         foreach(string patchName in _fixes[index].PatchNames) patchManager.UndoPatch(patchName);
+        foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StopHandler(detourHandlerName);
     }
     
     public void Start()
