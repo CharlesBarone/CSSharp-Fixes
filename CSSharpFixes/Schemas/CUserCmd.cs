@@ -79,4 +79,3 @@ public struct CUserCmdUnix
     public IntPtr @base; // CBaseUserCmdPB *base;
     public CInButtonStateReal buttonState;
 }
-
