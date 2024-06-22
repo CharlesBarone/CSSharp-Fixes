@@ -62,13 +62,13 @@ public class Patch
         }
         
         // Backup original bytes at address with length of _bytes.Count
-       _originalBytes = Utils.ReadBytesFromAddress(address, _bytes.Count);
+        _originalBytes = Utils.ReadBytesFromAddress(address, _bytes.Count);
        
-       // Log the bytes in hex
-       _logger.LogInformation("[CSSharpFixes][Patch][PerformPatch()][Patch={patchName}][Signature={signatureName}][OriginalBytes={originalBytes}]",
+        // Log the bytes in hex
+        _logger.LogInformation("[CSSharpFixes][Patch][PerformPatch()][Patch={patchName}][Signature={signatureName}][OriginalBytes={originalBytes}]",
            _patchName, _signatureName, Utils.ByteToHex(_originalBytes));
        
-       Utils.WriteBytesToAddress(address, _bytes);
+        Utils.WriteBytesToAddress(address, _bytes);
         
         _isPatched = true;
 
