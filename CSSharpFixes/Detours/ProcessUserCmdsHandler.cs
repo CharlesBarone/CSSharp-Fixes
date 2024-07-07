@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CSSharpFixes.Enums.Detours.ProcessUserCmds;
 using CSSharpFixes.Extensions;
 using CSSharpFixes.Models;
+using CSSharpFixes.Schemas.Protobuf;
 using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes.Detours;
@@ -117,16 +118,36 @@ public class ProcessUserCmdsHandler : PreHandler
                     float* when = (float*)whenPtr.ToPointer();
                     if(*when > 0.0f) 
                     {
-                        // _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPre={2}]",
-                        // cmdIdx, subTickMoveIdx, *when);
-                        *when = 0.0f;
-                        // _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPost={2}]",
-                        //     cmdIdx, subTickMoveIdx, *when);
+                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPre={2}]",
+                         cmdIdx, subTickMoveIdx, *when);
+
+                        IntPtr? test = GetSubTickMovePtr(cmdPtr, subTickMoveIdx);
+                        if(test == null) continue;
+                        CSubTickMoveStep subTickMove = new ((IntPtr)test);
+                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPreTEST={2}]",
+                            cmdIdx, subTickMoveIdx, subTickMove.When);
+
+                        subTickMove.When = 0.0f;
+                        //*when = 0.0f;
+                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPost={2}]",
+                             cmdIdx, subTickMoveIdx, *when);
+                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPostTEST={2}]",
+                            cmdIdx, subTickMoveIdx, subTickMove.When);
                     }
                     
                 }
             }
         }
         return HookResult.Changed;
+    }
+
+    private IntPtr? GetSubTickMovePtr(IntPtr cUserCmdPtr, int index)
+    {
+        CUserCmd cUserCmd = new (cUserCmdPtr);
+        CBaseUserCmdPB? cBaseUserCmdPb = cUserCmd.Base;
+        if(cBaseUserCmdPb == null) return null;
+        Schemas.Protobuf.Interop.RepeatedPtrField<CSubTickMoveStep>? subTickMoves = cBaseUserCmdPb.SubtickMoves;
+        if(subTickMoves == null) return null;
+        return subTickMoves[index];
     }
 }
