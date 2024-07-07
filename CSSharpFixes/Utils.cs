@@ -180,13 +180,4 @@ public class Utils
         Marshal.Copy(address, buffer, 0, size);
         return buffer;
     }
-    
-    public static unsafe TDest ReinterpretCast<TSource, TDest>(TSource source)
-    {
-        var sourceRef = __makeref(source);
-        var dest = default(TDest);
-        var destRef = __makeref(dest);
-        *(IntPtr*)&destRef = *(IntPtr*)&sourceRef;
-        return __refvalue(destRef, TDest);
-    }
 }
