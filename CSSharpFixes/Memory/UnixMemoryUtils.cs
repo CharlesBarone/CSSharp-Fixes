@@ -1,4 +1,24 @@
-﻿using System.Runtime.InteropServices;
+﻿/*
+    =============================================================================
+    CS#Fixes
+    Copyright (C) 2023-2024 Charles Barone <CharlesBarone> / hypnos <hyps.dev>
+    =============================================================================
+
+    This program is free software; you can redistribute it and/or modify it under
+    the terms of the GNU General Public License, version 3.0, as published by the
+    Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+    details.
+
+    You should have received a copy of the GNU General Public License along with
+    this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CSSharpFixes.Memory;
 
@@ -89,6 +109,40 @@ public class UnixMemoryUtils
 
         result = NativeMethods.mprotect(alignAddr, alignSize, oldProt);
     }
+    
+    private static byte[]? ReadProcessMemory(int pid, long address, int size)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return null;
+        
+        byte[] buffer = new byte[size];
+
+        NativeMethods.Iovec local = new NativeMethods.Iovec
+        {
+            iov_base = Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0),
+            iov_len = new IntPtr(size)
+        };
+
+        NativeMethods.Iovec remote = new NativeMethods.Iovec
+        {
+            iov_base = new IntPtr(address),
+            iov_len = new IntPtr(size)
+        };
+
+        long bytesRead = NativeMethods.process_vm_readv(pid, new NativeMethods.Iovec[] { local }, 1, new NativeMethods.Iovec[] { remote }, 1, 0);
+        if (bytesRead == -1)
+        {
+            throw new Exception($"process_vm_readv failed with error {Marshal.GetLastPInvokeError()}");
+        }
+
+        return buffer;
+    }
+    
+    public static byte[]? ReadMemory(IntPtr address, int size)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return null;
+        
+        return ReadProcessMemory(Process.GetCurrentProcess().Id, (long)address, size);
+    }
 
     #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
     #pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
@@ -127,6 +181,16 @@ public class UnixMemoryUtils
 
         [DllImport("libc")]
         public static extern long sysconf(int name);
+
+        [DllImport("libc")]
+        public static extern long process_vm_readv(int pid, Iovec[] local_iov, ulong liovcnt, Iovec[] remote_iov, ulong riovcnt, ulong flags);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Iovec
+        {
+            public IntPtr iov_base;
+            public IntPtr iov_len;
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct link_map

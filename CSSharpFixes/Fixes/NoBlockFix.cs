@@ -17,9 +17,13 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace CSSharpFixes.Schemas.Interfaces;
+namespace CSSharpFixes.Fixes;
 
-public interface ISizeable
+public class NoBlockFix: BaseFix
 {
-    static abstract ulong Size();
+    public NoBlockFix()
+    {
+        Name = "NoBlockFix";
+        ConfigurationProperty = "EnableNoBlock";
+    }
 }
