@@ -1,4 +1,6 @@
-﻿namespace CSSharpFixes.Schemas.Protobuf.Interop;
+﻿using System.Runtime.InteropServices;
+
+namespace CSSharpFixes.Schemas.Protobuf.Interop;
 
 public class Rep<T> where T : class
 {
@@ -11,6 +13,7 @@ public class Rep<T> where T : class
         _address = address;
         
         _offsets.Add("AllocatedSize", 0x0);
+        // 0x4 of padding
         _offsets.Add("ElementsAddress", 0x8);
     }
     
@@ -39,8 +42,9 @@ public class Rep<T> where T : class
     {
         get
         {
-            IntPtr elementsAddress = (IntPtr)((ulong)_address + _offsets["ElementsAddress"]);
-            if(elementsAddress == IntPtr.Zero) return null;
+            IntPtr elementsAddressPtr = (IntPtr)((ulong)_address + _offsets["ElementsAddress"]);
+            if(elementsAddressPtr == IntPtr.Zero) return null;
+            IntPtr elementsAddress = Marshal.ReadIntPtr(elementsAddressPtr);
             return elementsAddress;
         }
     }

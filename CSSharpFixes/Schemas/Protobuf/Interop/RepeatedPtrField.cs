@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
-using CSSharpFixes.Schemas.Interfaces;
 
 namespace CSSharpFixes.Schemas.Protobuf.Interop;
 
-public class RepeatedPtrField<T> where T : class, ISizeable
+public class RepeatedPtrField<T> where T : class, Interfaces.ISizeable
 {
+    public static ulong Size() => 0x18;
+    
     private IntPtr _address;
     private Dictionary<string, ulong> _offsets = new();
     
@@ -15,8 +16,8 @@ public class RepeatedPtrField<T> where T : class, ISizeable
         
         _offsets.Add("ArenaAddress", 0x0);
         _offsets.Add("CurrentSize", 0x8);
-        _offsets.Add("TotalSize", 0x10);
-        _offsets.Add("Rep", 0x18);
+        _offsets.Add("TotalSize", 0xC);
+        _offsets.Add("Rep", 0x10);
     }
     
     ~RepeatedPtrField()

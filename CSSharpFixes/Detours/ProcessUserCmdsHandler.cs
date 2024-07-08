@@ -1,19 +1,16 @@
-﻿using System.Runtime.InteropServices;
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
-using CSSharpFixes.Enums.Detours.ProcessUserCmds;
 using CSSharpFixes.Extensions;
 using CSSharpFixes.Models;
 using CSSharpFixes.Schemas.Protobuf;
 using Microsoft.Extensions.Logging;
+using CBaseUserCmdPB = CSSharpFixes.Schemas.Protobuf.CBaseUserCmdPB;
 
 namespace CSSharpFixes.Detours;
 
 public class ProcessUserCmdsHandler : PreHandler
 {
-    private LogLevel _logLevel = LogLevel.Trace;
-    private TraceLevel _traceLevel = TraceLevel.SubTickMoveSetWhenOnly;
     private ProcessUserCmdsHandler(string name, Detour preDetour, ILogger<CSSharpFixes> logger)
         : base(name, preDetour, logger) {}
     
@@ -51,103 +48,91 @@ public class ProcessUserCmdsHandler : PreHandler
         if (playerPawn.MoveType != MoveType_t.MOVETYPE_WALK && playerPawn.MoveType != MoveType_t.MOVETYPE_PUSH)
             return HookResult.Continue;
         
-        //_logger.LogInformation("[OnProcessUsercmds][MoveType={0}]", playerPawn.MoveType);
-        
-        if (_logLevel == LogLevel.Trace && _traceLevel >= TraceLevel.ReadParams)
-        {
-            _logger.LogInformation("[OnProcessUsercmds][CUserCmd*={0}]", h.GetParam<IntPtr>(1));
-            _logger.LogInformation("[OnProcessUsercmds][numCommands={1}]", h.GetParam<int>(2));
-        }
-        
         // get the number of commands
         int numCommands = h.GetParam<int>(2);
         
-        // CUserCmd* (In my C# structs, either CUserCmdUnix or CUserCmdWindows depending on platform)
-        // The separate structs are necessary because of the different sizes of the structs and
-        // to allow this to be done at runtime instead of compile time like #ifdef _WIN32 in cs2fixes
         // https://github.com/maecry/asphyxia-cs2/blob/master/cstrike/sdk/datatypes/usercmd.h#L262-L291
         IntPtr cmdsPtr = h.GetParam<IntPtr>(1);
         
         for (ulong cmdIdx = 0; cmdIdx < (ulong)numCommands; cmdIdx++)
         {
-            // Unsafe block to work with pointers directly
-            unsafe
+            IntPtr cmdPtr = (IntPtr)((ulong)cmdsPtr + cmdIdx * 0x80);
+            CUserCmd cUserCmd = new(cmdPtr);
+            
+            // if(cUserCmd.LeftHandDesired != null)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][LeftHandDesired={1}]",
+            //         cmdIdx, cUserCmd.LeftHandDesired);
+            
+            CBaseUserCmdPB? cBaseUserCmdPb = cUserCmd.Base;
+            if(cBaseUserCmdPb == null) continue;
+
+            // if(cBaseUserCmdPb.CommandNumber != null && cBaseUserCmdPb.CommandNumber != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][CommandNumber={1}]",
+            //         cmdIdx, cBaseUserCmdPb.CommandNumber.Value.ToString() );
+            // if(cBaseUserCmdPb.ClientTick != null && cBaseUserCmdPb.ClientTick != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][ClientTick={1}]",
+            //         cmdIdx, cBaseUserCmdPb.ClientTick.Value.ToString() );
+            // if (cBaseUserCmdPb.ForwardMove != null && cBaseUserCmdPb.ForwardMove != 0.0f)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][ForwardMove={1}]",
+            //         cmdIdx, cBaseUserCmdPb.ForwardMove.Value);
+            // if(cBaseUserCmdPb.SideMove != null && cBaseUserCmdPb.SideMove != 0.0f)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][SideMove={1}]",
+            //         cmdIdx, cBaseUserCmdPb.SideMove.Value );
+            // if(cBaseUserCmdPb.UpMove != null && cBaseUserCmdPb.UpMove != 0.0f)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][UpMove={1}]",
+            //         cmdIdx, cBaseUserCmdPb.UpMove.Value );
+            // if(cBaseUserCmdPb.Impulse != null && cBaseUserCmdPb.Impulse != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][Impulse={1}]",
+            //         cmdIdx, cBaseUserCmdPb.Impulse.Value.ToString() );
+            // if(cBaseUserCmdPb.WeaponSelect != null && cBaseUserCmdPb.WeaponSelect != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][WeaponSelect={1}]",
+            //         cmdIdx, cBaseUserCmdPb.WeaponSelect.Value.ToString() );
+            
+            // if(*currentSize > 0) _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][currentSize={1}]",
+            //     cmdIdx, *currentSize);
+            
+            Schemas.Protobuf.Interop.RepeatedPtrField<CSubTickMoveStep>? subTickMoves = cBaseUserCmdPb.SubtickMoves;
+            if(subTickMoves == null) continue;
+            if(subTickMoves.CurrentSize == null || subTickMoves.CurrentSize == 0) continue;
+            
+            // if(subTickMoves.CurrentSize != null && subTickMoves.CurrentSize != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][CurrentSize={1}]",
+            //         cmdIdx, subTickMoves.CurrentSize.Value );
+            // if(subTickMoves.TotalSize != null && subTickMoves.TotalSize != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][TotalSize={1}]",
+            //         cmdIdx, subTickMoves.TotalSize.Value );
+
+            Schemas.Protobuf.Interop.Rep<CSubTickMoveStep>? rep = subTickMoves.Rep;
+            if(rep == null) continue;
+            
+            // if(rep.AllocatedSize != null && rep.AllocatedSize != 0)
+            //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][AllocatedSize={1}]",
+            //         cmdIdx, rep.AllocatedSize.Value );
+            
+            for (int subTickMoveIdx = 0; subTickMoveIdx < subTickMoves.CurrentSize; subTickMoveIdx++)
             {
-                IntPtr cmdPtr = (IntPtr)((ulong)cmdsPtr + cmdIdx * 0x80);
-                IntPtr cmdBasePtrPtr = (IntPtr)((ulong)cmdPtr + 0x30);
-                if(cmdBasePtrPtr == IntPtr.Zero) continue;
-                IntPtr cmdBasePtr = Marshal.ReadIntPtr(cmdBasePtrPtr);
-                if(cmdBasePtr == IntPtr.Zero) continue;
-                IntPtr forwardMovePtr = (IntPtr)((ulong)cmdBasePtr + 0x50);
-                if(forwardMovePtr == IntPtr.Zero) continue;
-                float* forwardMove = (float*)forwardMovePtr.ToPointer();
-                // if(*forwardMove > 0.0f) _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][forwardMove={1}]",
-                //     cmdIdx, *forwardMove);
-                // 0x18 = sizeof BasePB
-                // 0x8 = sizeof uint (void* pArena)
-                // 0x8 = sizeof int (current_size)
-                // 0x8 = sizeof int (total_size)
-                // 0x8 = sizeof Rep<T>*
-                IntPtr currentSizePtr = (IntPtr)((ulong)cmdBasePtr + 0x18 + 0x8);
-                if(currentSizePtr == IntPtr.Zero) continue;
-                int* currentSize = (int*)currentSizePtr.ToPointer();
-                if(*currentSize < 1) continue;
-                // if(*currentSize > 0) _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][currentSize={1}]",
-                //     cmdIdx, *currentSize);
-                IntPtr repPtrPtr = (IntPtr)((ulong)cmdBasePtr + 0x18 + 0x8 + 0x8 + 0x8);
-                if(repPtrPtr == IntPtr.Zero) continue;
-                IntPtr repPtr = Marshal.ReadIntPtr(repPtrPtr);
-                if(repPtr == IntPtr.Zero) continue;
-                IntPtr elementsPtr = (IntPtr)((ulong)repPtr + 0x8);
-                if(elementsPtr == IntPtr.Zero) continue;
-
-                ulong sizeOfSubTickMoveStep = 0x30;
+                IntPtr? subTickMoveAddress = subTickMoves[subTickMoveIdx];
+                if(subTickMoveAddress == null) continue;
+                CSubTickMoveStep subTickMove = new((IntPtr)subTickMoveAddress);
+                if(subTickMove.Pressed == null) continue;
+                if(subTickMove.When == null) continue;
                 
-                for (int subTickMoveIdx = 0; subTickMoveIdx < *currentSize; subTickMoveIdx++)
+                if(subTickMove.When > 0.0f)
                 {
-                    IntPtr subTickMovePtr = (IntPtr)((ulong)elementsPtr + (ulong)subTickMoveIdx * sizeOfSubTickMoveStep);
-                    if(subTickMovePtr == IntPtr.Zero) continue;
-                    // 0x18 = sizeof BasePB
-                    // 0x8 = sizeof ulong (button)
-                    // 0x1 = sizeof bool (pressed)
-                    // 0x4 = sizeof float (when)
-                    // 0x4 = sizeof float (analog_forward_delta)
-                    // 0x4 = sizeof float (analog_left_delta)
-                    IntPtr whenPtr = (IntPtr)((ulong)subTickMovePtr + 0x18 + 0x8 + 0x1);
-                    if(whenPtr == IntPtr.Zero) continue;
-                    float* when = (float*)whenPtr.ToPointer();
-                    if(*when > 0.0f) 
-                    {
-                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPre={2}]",
-                         cmdIdx, subTickMoveIdx, *when);
-
-                        IntPtr? test = GetSubTickMovePtr(cmdPtr, subTickMoveIdx);
-                        if(test == null) continue;
-                        CSubTickMoveStep subTickMove = new ((IntPtr)test);
-                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPreTEST={2}]",
-                            cmdIdx, subTickMoveIdx, subTickMove.When);
-
-                        subTickMove.When = 0.0f;
-                        //*when = 0.0f;
-                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPost={2}]",
-                             cmdIdx, subTickMoveIdx, *when);
-                        _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPostTEST={2}]",
-                            cmdIdx, subTickMoveIdx, subTickMove.When);
-                    }
+                    // if(subTickMove.Pressed != null && subTickMove.Pressed == true)
+                    //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][Pressed={2}]",
+                    //         cmdIdx, subTickMoveIdx, subTickMove.Pressed.Value);
                     
+                    // _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPre={2}]",
+                    //     cmdIdx, subTickMoveIdx, subTickMove.When);
+
+                    subTickMove.When = 0.0f;
+                    
+                    // _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][whenPost={2}]",
+                    //     cmdIdx, subTickMoveIdx, subTickMove.When);
                 }
             }
         }
         return HookResult.Changed;
-    }
-
-    private IntPtr? GetSubTickMovePtr(IntPtr cUserCmdPtr, int index)
-    {
-        CUserCmd cUserCmd = new (cUserCmdPtr);
-        CBaseUserCmdPB? cBaseUserCmdPb = cUserCmd.Base;
-        if(cBaseUserCmdPb == null) return null;
-        Schemas.Protobuf.Interop.RepeatedPtrField<CSubTickMoveStep>? subTickMoves = cBaseUserCmdPb.SubtickMoves;
-        if(subTickMoves == null) return null;
-        return subTickMoves[index];
     }
 }

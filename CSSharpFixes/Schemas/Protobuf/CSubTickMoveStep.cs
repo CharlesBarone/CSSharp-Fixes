@@ -15,11 +15,13 @@ public class CSubTickMoveStep: Interfaces.ISizeable
         if (address == IntPtr.Zero) throw new ArgumentException("Address cannot be zero.");
         _address = address;
         
-        _offsets.Add("Button", 0x18);
-        _offsets.Add("Pressed", 0x20);
-        _offsets.Add("When", 0x21);
-        _offsets.Add("AnalogFowardDelta", 0x25);
-        _offsets.Add("AnalogLeftDelta", 0x29);
+        // CBasePB size = 0x18
+        _offsets.Add("Button", 0x18); // ulong
+        _offsets.Add("Pressed", 0x20); // bool
+        // 0x3 bytes padding (to align bool)
+        _offsets.Add("When", 0x24); // float
+        _offsets.Add("AnalogForwardDelta", 0x28); // float
+        _offsets.Add("AnalogLeftDelta", 0x2C); // float
     }
     
     ~CSubTickMoveStep()
@@ -85,17 +87,17 @@ public class CSubTickMoveStep: Interfaces.ISizeable
         }
     }
     
-    public float? AnalogFowardDelta
+    public float? AnalogForwardDelta
     {
         get
         {
-            IntPtr analogFowardDeltaPtr = (IntPtr)((ulong)_address + _offsets["AnalogFowardDelta"]);
-            if(analogFowardDeltaPtr == IntPtr.Zero) return null;
+            IntPtr analogForwardDeltaPtr = (IntPtr)((ulong)_address + _offsets["AnalogForwardDelta"]);
+            if(analogForwardDeltaPtr == IntPtr.Zero) return null;
             
             unsafe
             {
-                float* analogFowardDelta = (float*)analogFowardDeltaPtr.ToPointer();
-                return *analogFowardDelta;
+                float* analogForwardDelta = (float*)analogForwardDeltaPtr.ToPointer();
+                return *analogForwardDelta;
             }
         }
     }
