@@ -138,6 +138,10 @@ public class ProcessUserCmdsHandler : PreHandler
                 
                 if(subTickMove.When > 0.0f)
                 {
+                    // There's some weird case where this can happen if you constantly walk against a trigger push.
+                    // This should never be a huge number if it is, skip it...
+                    if(subTickMove.When > 1000.0f) continue; 
+                    
                     // if(subTickMove.Pressed != null && subTickMove.Pressed == true)
                     //     _logger.LogInformation("[OnProcessUsercmds][cmdIdx={0}][subTickMoveIdx={1}][Pressed={2}]",
                     //         cmdIdx, subTickMoveIdx, subTickMove.Pressed.Value);
