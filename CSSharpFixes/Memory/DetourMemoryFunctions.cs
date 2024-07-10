@@ -26,6 +26,7 @@ public static class DetourMemoryFunctions
     static DetourMemoryFunctions()
     {
         Add<MemoryFunctionVoid<IntPtr, IntPtr, int, bool, float, IntPtr>>("ProcessUsercmds");
+        Add<MemoryFunctionVoid<IntPtr, IntPtr>>("TriggerPush_Touch");
     }
 
     private static Dictionary<string, BaseMemoryFunction> _memoryFunctions = new();

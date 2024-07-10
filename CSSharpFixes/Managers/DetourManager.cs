@@ -36,6 +36,7 @@ public class DetourManager
     public void Start()
     {
         _handlers.Add("ProcessUserCmdsHandler", BaseHandler.Build<ProcessUserCmdsHandler>(_logger));
+        _handlers.Add("TriggerPushTouchHandler", BaseHandler.Build<TriggerPushTouchHandler>(_logger));
     }
     
     public void Stop()

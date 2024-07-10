@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace CSSharpFixes;
 
@@ -198,5 +199,34 @@ public class Utils
         byte[] buffer = new byte[size];
         Marshal.Copy(address, buffer, 0, size);
         return buffer;
+    }
+
+    public static bool IsSolid(CCollisionProperty collision)
+    {
+        return (collision.SolidType != SolidType_t.SOLID_NONE
+                && !SolidFlagIsSet(collision, 0x4)); // FSOLID_NOT_SOLID = 0x4
+    }
+    
+    public static bool SolidFlagIsSet(CCollisionProperty collision, byte flag)
+    {
+        return (collision.SolidFlags & flag) > 0;
+    }
+    
+    public static void SinCos(float radians, out float sine, out float cosine)
+    {
+        sine = (float)Math.Sin(radians);
+        cosine = (float)Math.Cos(radians);
+    }
+
+    public static float DegToRad(float degrees)
+    {
+        return (float)(Math.PI / 180) * degrees;
+    }
+    
+    public static void VectorRotate(Vector vecIn, float[,] matIn, ref Vector vecOut)
+    {
+        vecOut.X = vecIn.X * matIn[0, 0] + vecIn.Y * matIn[0, 1] + vecIn.Z * matIn[0, 2];
+        vecOut.Y = vecIn.X * matIn[1, 0] + vecIn.Y * matIn[1, 1] + vecIn.Z * matIn[1, 2];
+        vecOut.Z = vecIn.X * matIn[2, 0] + vecIn.Y * matIn[2, 1] + vecIn.Z * matIn[2, 2];
     }
 }
