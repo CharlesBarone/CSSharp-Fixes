@@ -18,7 +18,9 @@
 */
 
 using System.Diagnostics.CodeAnalysis;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace CSSharpFixes.Extensions;
@@ -106,5 +108,17 @@ public static class PlayerExtensions
     {
         if (!player.IsCompletelyValid(out var playerPawn)) return false;
         return playerPawn.TeamNum == (byte)team;
+    }
+
+    public static void SetCollisionGroup(this CCSPlayerPawn playerPawn, CollisionGroup collisionGroup)
+    {
+        if(!playerPawn.IsValid) return;
+        
+        playerPawn.Collision.CollisionAttribute.CollisionGroup = (byte)collisionGroup;
+        playerPawn.Collision.CollisionGroup = (byte)collisionGroup;
+        
+        Utilities.SetStateChanged(playerPawn, "CCollisionProperty", "m_CollisionGroup");
+        Utilities.SetStateChanged(playerPawn, "CCollisionProperty", "m_collisionAttribute");
+
     }
 }

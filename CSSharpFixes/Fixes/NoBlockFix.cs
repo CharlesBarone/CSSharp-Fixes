@@ -17,13 +17,31 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities.Constants;
+using CSSharpFixes.Extensions;
+using CSSharpFixes.Fixes.Interfaces;
+
 namespace CSSharpFixes.Fixes;
 
-public class NoBlockFix: BaseFix
+public class NoBlockFix: BaseFix, ITickable
 {
     public NoBlockFix()
     {
         Name = "NoBlockFix";
         ConfigurationProperty = "EnableNoBlock";
+    }
+
+    public void OnTick(List<CCSPlayerController> players)
+    {
+        if(!Enabled) return;
+        
+        foreach (CCSPlayerController player in players)
+        {
+            if(!player.IsCompletelyValid(out var playerPawn)) continue;
+            CollisionGroup collisionGroup = (CollisionGroup)playerPawn.Collision.CollisionAttribute.CollisionGroup;
+            if(collisionGroup == CollisionGroup.COLLISION_GROUP_DEBRIS) continue;
+            playerPawn.SetCollisionGroup(CollisionGroup.COLLISION_GROUP_DEBRIS);
+        }
     }
 }

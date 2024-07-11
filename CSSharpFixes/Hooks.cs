@@ -52,7 +52,7 @@ public partial class CSSharpFixes
 
     private void OnTick()
     {
-        
+        _fixManager.OnTick();
     }
 
     private void OnMapStart(string mapName)

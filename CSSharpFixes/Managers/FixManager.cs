@@ -17,7 +17,10 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
 using CSSharpFixes.Fixes;
+using CSSharpFixes.Fixes.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes.Managers;
@@ -47,6 +50,8 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
 
         foreach(string patchName in _fixes[index].PatchNames) patchManager.PerformPatch(patchName);
         foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StartHandler(detourHandlerName);
+        
+        _fixes[index].Enabled = true;
     }
 
     private void StopFix(int index)
@@ -55,6 +60,18 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         
         foreach(string patchName in _fixes[index].PatchNames) patchManager.UndoPatch(patchName);
         foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StopHandler(detourHandlerName);
+        
+        _fixes[index].Enabled = false;
+    }
+
+    public void OnTick()
+    {
+        List<CCSPlayerController> players = Utilities.GetPlayers();
+        
+        foreach (BaseFix fix in _fixes)
+        {
+            if(fix is ITickable tickable) tickable.OnTick(players);
+        }
     }
     
     public void Start()
@@ -83,10 +100,9 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         foreach (BaseFix fix in _fixes)
         {
             foreach(string patchName in fix.PatchNames) patchManager.UndoPatch(patchName);
+            foreach(string detourHandlerName in fix.DetourHandlerNames) detourManager.StopHandler(detourHandlerName);
         }
         
         _fixes.Clear();
     }
-    
-    
 }

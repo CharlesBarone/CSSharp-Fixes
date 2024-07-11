@@ -17,13 +17,11 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace CSSharpFixes.Fixes;
+using CounterStrikeSharp.API.Core;
 
-public abstract class BaseFix
+namespace CSSharpFixes.Fixes.Interfaces;
+
+public interface ITickable
 {
-    public string Name = String.Empty;
-    public string ConfigurationProperty = String.Empty;
-    public List<string> PatchNames = new();
-    public List<string> DetourHandlerNames = new();
-    public Boolean Enabled = false;
+    void OnTick(List<CCSPlayerController> players);
 }
