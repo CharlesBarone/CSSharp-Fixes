@@ -84,7 +84,6 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         _fixes.Add(new WaterFix());
         _fixes.Add(new TriggerPushFix());
         _fixes.Add(new CPhysBoxUseFix());
-        _fixes.Add(new BlastDamageCrashFix());
         // _fixes.Add(new NavmeshLookupLagFix()); // Commented out since it seems to cause crashes every time I test it...
         _fixes.Add(new NoBlockFix());
         _fixes.Add(new TeamMessagesFix());

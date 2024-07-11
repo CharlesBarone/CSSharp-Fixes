@@ -29,7 +29,6 @@ namespace CSSharpFixes.Config
         private bool enableWaterFix = true;
         private bool enableTriggerPushFix = true;
         private bool enableCPhysBoxUseFix = false;
-        private bool enableBlastDamageCrashFix = false;
         //private bool enableNavmeshLookupLagFix = false; // Commented out since it seems to cause crashes every time I test it...
         private bool enableNoBlock = false;
         private bool disableTeamMessages = false;
@@ -100,19 +99,6 @@ namespace CSSharpFixes.Config
                 if (enableCPhysBoxUseFix != value)
                 {
                     enableCPhysBoxUseFix = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool EnableBlastDamageCrashFix
-        {
-            get => enableBlastDamageCrashFix;
-            set
-            {
-                if (enableBlastDamageCrashFix != value)
-                {
-                    enableBlastDamageCrashFix = value;
                     OnPropertyChanged();
                 }
             }
