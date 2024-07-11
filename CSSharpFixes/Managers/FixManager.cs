@@ -67,15 +67,15 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         _fixes[index].Enabled = false;
     }
 
-    // public void OnTick()
-    // {
-    //     List<CCSPlayerController> players = Utilities.GetPlayers();
-    //     
-    //     foreach (BaseFix fix in _fixes)
-    //     {
-    //         if(fix is ITickable tickable) tickable.OnTick(players);
-    //     }
-    // }
+    public void OnTick()
+    {
+        List<CCSPlayerController> players = Utilities.GetPlayers();
+        
+        foreach (BaseFix fix in _fixes)
+        {
+            if(fix is ITickable tickable) tickable.OnTick(players);
+        }
+    }
     
     public void Start()
     {

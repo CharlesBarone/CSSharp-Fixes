@@ -34,6 +34,7 @@ public partial class CSSharpFixes
         RegisterListener<Listeners.OnMapEnd>(OnMapEnd);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
+        RegisterListener<Listeners.OnTick>(OnTick);
     }
 
     private void UnregisterHooks()
@@ -60,6 +61,8 @@ public partial class CSSharpFixes
     public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) => 
         _eventManager.OnPlayerTeam(@event, info);
 
+    private void OnTick() => _fixManager.OnTick();
+    
     private void OnMapEnd()
     {
         
