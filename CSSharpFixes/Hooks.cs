@@ -18,17 +18,21 @@
 */
 
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Modules.Events;
 using CounterStrikeSharp.API.Modules.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes;
 
 public partial class CSSharpFixes
 {
+    public delegate HookResult GameEventHandler(GameEvent gameEvent, GameEventInfo gameEventInfo, ILogger<CSSharpFixes> logger);
+    
     private void RegisterHooks()
     {
         RegisterListener<Listeners.OnMapEnd>(OnMapEnd);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
-        RegisterListener<Listeners.OnTick>(OnTick);
         RegisterListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
     }
 
@@ -36,7 +40,6 @@ public partial class CSSharpFixes
     {
         RemoveListener<Listeners.OnMapEnd>(OnMapEnd);
         RemoveListener<Listeners.OnMapStart>(OnMapStart);
-        RemoveListener<Listeners.OnTick>(OnTick);
         RemoveListener<Listeners.OnServerPrecacheResources>(OnServerPrecacheResources);
     }
 
@@ -45,14 +48,17 @@ public partial class CSSharpFixes
         //manifest.AddResource("models/food/pizza/pizza_1.vmdl");
     }
 
+    [GameEventHandler]
+    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    { return _eventManager.OnRoundStart(@event, info); }
+    
+    [GameEventHandler]
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    { return _eventManager.OnPlayerSpawn(@event, info); }
+
     private void OnMapEnd()
     {
         
-    }
-
-    private void OnTick()
-    {
-        _fixManager.OnTick();
     }
 
     private void OnMapStart(string mapName)

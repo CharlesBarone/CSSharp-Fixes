@@ -25,5 +25,6 @@ public abstract class BaseFix
     public string ConfigurationProperty = String.Empty;
     public List<string> PatchNames = new();
     public List<string> DetourHandlerNames = new();
+    public Dictionary<string, CSSharpFixes.GameEventHandler> Events = new();
     public Boolean Enabled = false;
 }

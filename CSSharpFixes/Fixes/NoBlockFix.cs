@@ -19,29 +19,37 @@
 
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
+using CounterStrikeSharp.API.Modules.Events;
 using CSSharpFixes.Extensions;
-using CSSharpFixes.Fixes.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes.Fixes;
 
-public class NoBlockFix: BaseFix, ITickable
+public class NoBlockFix: BaseFix
 {
     public NoBlockFix()
     {
         Name = "NoBlockFix";
         ConfigurationProperty = "EnableNoBlock";
+        Events = new Dictionary<string, CSSharpFixes.GameEventHandler>
+        {
+            { "OnPlayerSpawn", OnPlayerSpawn },
+        };
+    }
+    
+    public void ApplyNoBlock(CCSPlayerController? player)
+    {
+        if(!player.IsCompletelyValid(out var playerPawn)) return;
+        CollisionGroup collisionGroup = (CollisionGroup)playerPawn.Collision.CollisionAttribute.CollisionGroup;
+        if(collisionGroup == CollisionGroup.COLLISION_GROUP_DEBRIS) return;
+        playerPawn.SetCollisionGroup(CollisionGroup.COLLISION_GROUP_DEBRIS);
     }
 
-    public void OnTick(List<CCSPlayerController> players)
+    public HookResult OnPlayerSpawn(GameEvent @event, GameEventInfo info, ILogger<CSSharpFixes> logger)
     {
-        if(!Enabled) return;
-        
-        foreach (CCSPlayerController player in players)
-        {
-            if(!player.IsCompletelyValid(out var playerPawn)) continue;
-            CollisionGroup collisionGroup = (CollisionGroup)playerPawn.Collision.CollisionAttribute.CollisionGroup;
-            if(collisionGroup == CollisionGroup.COLLISION_GROUP_DEBRIS) continue;
-            playerPawn.SetCollisionGroup(CollisionGroup.COLLISION_GROUP_DEBRIS);
-        }
+        if(@event is not EventPlayerSpawn playerSpawnEvent) return HookResult.Continue;
+        logger.LogInformation("[CSSharpFixes][Fix][NoBlockFix][OnPlayerSpawn()]");
+        ApplyNoBlock(playerSpawnEvent.Userid);
+        return HookResult.Continue;
     }
 }

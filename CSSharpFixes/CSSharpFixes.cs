@@ -37,16 +37,18 @@ public partial class CSSharpFixes: BasePlugin
     private readonly GameDataManager _gameDataManager;
     private readonly DetourManager _detourManager;
     private readonly PatchManager _patchManager;
+    private readonly EventManager _eventManager;
     private readonly FixManager _fixManager;
     
     public CSSharpFixes(ModuleInformation moduleInformation, GameDataManager gameDataManager, DetourManager detourManager,
-        PatchManager patchManager, FixManager fixManager, Configuration configuration)
+        PatchManager patchManager, EventManager eventManager, FixManager fixManager, Configuration configuration)
     {
         _moduleInformation = moduleInformation;
         
         _gameDataManager = gameDataManager;
         _detourManager = detourManager;
         _patchManager = patchManager;
+        _eventManager = eventManager;
         _fixManager = fixManager;
         
         _configuration = configuration;
@@ -57,6 +59,7 @@ public partial class CSSharpFixes: BasePlugin
         RegisterHooks();
         RegisterConVars();
         _gameDataManager.Start();
+        _eventManager.Start();
         _detourManager.Start();
         _patchManager.Start();
         _fixManager.Start();
@@ -74,6 +77,7 @@ public partial class CSSharpFixes: BasePlugin
         _fixManager.Stop();
         _patchManager.Stop();
         _detourManager.Stop();
+        _eventManager.Stop();
         _gameDataManager.Stop();
     }
 }

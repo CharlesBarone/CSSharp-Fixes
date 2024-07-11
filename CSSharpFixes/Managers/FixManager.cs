@@ -25,7 +25,8 @@ using Microsoft.Extensions.Logging;
 
 namespace CSSharpFixes.Managers;
 
-public class FixManager(PatchManager patchManager, DetourManager detourManager, ILogger<CSSharpFixes> logger)
+public class FixManager(PatchManager patchManager, DetourManager detourManager, EventManager eventManager,
+    ILogger<CSSharpFixes> logger)
 {
     private List<BaseFix> _fixes = new();
 
@@ -50,6 +51,7 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
 
         foreach(string patchName in _fixes[index].PatchNames) patchManager.PerformPatch(patchName);
         foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StartHandler(detourHandlerName);
+        foreach(var eventPair in _fixes[index].Events) eventManager.RegisterEvent(eventPair.Key, eventPair.Value);
         
         _fixes[index].Enabled = true;
     }
@@ -60,19 +62,20 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         
         foreach(string patchName in _fixes[index].PatchNames) patchManager.UndoPatch(patchName);
         foreach(string detourHandlerName in _fixes[index].DetourHandlerNames) detourManager.StopHandler(detourHandlerName);
+        foreach(var eventPair in _fixes[index].Events) eventManager.UnregisterEvent(eventPair.Key, eventPair.Value);
         
         _fixes[index].Enabled = false;
     }
 
-    public void OnTick()
-    {
-        List<CCSPlayerController> players = Utilities.GetPlayers();
-        
-        foreach (BaseFix fix in _fixes)
-        {
-            if(fix is ITickable tickable) tickable.OnTick(players);
-        }
-    }
+    // public void OnTick()
+    // {
+    //     List<CCSPlayerController> players = Utilities.GetPlayers();
+    //     
+    //     foreach (BaseFix fix in _fixes)
+    //     {
+    //         if(fix is ITickable tickable) tickable.OnTick(players);
+    //     }
+    // }
     
     public void Start()
     {
