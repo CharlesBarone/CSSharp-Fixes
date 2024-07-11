@@ -49,12 +49,16 @@ public partial class CSSharpFixes
     }
 
     [GameEventHandler]
-    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
-    { return _eventManager.OnRoundStart(@event, info); }
+    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info) => 
+        _eventManager.OnRoundStart(@event, info);
     
     [GameEventHandler]
-    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
-    { return _eventManager.OnPlayerSpawn(@event, info); }
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info) => 
+        _eventManager.OnPlayerSpawn(@event, info);
+    
+    [GameEventHandler]
+    public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) => 
+        _eventManager.OnPlayerTeam(@event, info);
 
     private void OnMapEnd()
     {

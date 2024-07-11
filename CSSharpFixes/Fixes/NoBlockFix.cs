@@ -48,7 +48,7 @@ public class NoBlockFix: BaseFix
     public HookResult OnPlayerSpawn(GameEvent @event, GameEventInfo info, ILogger<CSSharpFixes> logger)
     {
         if(@event is not EventPlayerSpawn playerSpawnEvent) return HookResult.Continue;
-        logger.LogInformation("[CSSharpFixes][Fix][NoBlockFix][OnPlayerSpawn()]");
+        // logger.LogInformation("[CSSharpFixes][Fix][NoBlockFix][OnPlayerSpawn()]");
         ApplyNoBlock(playerSpawnEvent.Userid);
         return HookResult.Continue;
     }

@@ -38,6 +38,7 @@ public class EventManager
     {
         _events.Add("OnRoundStart", new List<CSSharpFixes.GameEventHandler>());
         _events.Add("OnPlayerSpawn", new List<CSSharpFixes.GameEventHandler>());
+        _events.Add("OnPlayerTeam", new List<CSSharpFixes.GameEventHandler>());
     }
     
     public void Stop()
@@ -75,6 +76,9 @@ public class EventManager
             {
                 case HookResult.Continue:
                     continue;
+                case HookResult.Changed:
+                    returnValue = HookResult.Changed;
+                    break;
                 case HookResult.Handled:
                     returnValue = HookResult.Handled;
                     break;
@@ -86,13 +90,12 @@ public class EventManager
         return returnValue;
     }
     
-    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
-    {
-        return ProcessEvent(@event, info, "OnRoundStart");
-    }
+    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info) =>
+        ProcessEvent(@event, info, "OnRoundStart");
     
-    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
-    {
-        return ProcessEvent(@event, info, "OnPlayerSpawn");
-    }
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info) =>
+        ProcessEvent(@event, info, "OnPlayerSpawn");
+    
+    public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) =>
+        ProcessEvent(@event, info, "OnPlayerTeam");
 }
