@@ -60,7 +60,7 @@ public partial class CSSharpFixes
     [GameEventHandler]
     public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) => 
         _eventManager.OnPlayerTeam(@event, info);
-
+    
     private void OnTick() => _fixManager.OnTick();
     
     private void OnMapEnd()

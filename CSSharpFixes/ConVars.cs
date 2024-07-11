@@ -33,7 +33,6 @@ public partial class CSSharpFixes
     public FakeConVar<bool> DisableSubTickMovement = new("css_fixes_disable_sub_tick_movement", "Disables sub-tick movement.", false);
     public FakeConVar<bool> EnableMovementUnlocker = new("css_fixes_enable_movement_unlocker", "Enables movement unlocker.", false);
     public FakeConVar<bool> EnforceFullAlltalk = new("css_fixes_enforce_full_alltalk", "Enforces sv_full_alltalk 1.", false);
-    public FakeConVar<bool> EnableDropMapWeapons = new("css_fixes_enable_drop_map_weapons", "Enables force dropping map-spawned weapons on death.", false);
     public FakeConVar<bool> EnableEntityStringPurge = new("css_fixes_purge_entity_strings", "Enables purge of the EntityNames stringtable on new rounds", false);
     
     private void RegisterConVars()
@@ -48,7 +47,6 @@ public partial class CSSharpFixes
         DisableSubTickMovement.ValueChanged += (sender, value) => { _configuration.DisableSubTickMovement = value; };
         EnableMovementUnlocker.ValueChanged += (sender, value) => { _configuration.EnableMovementUnlocker = value; };
         EnforceFullAlltalk.ValueChanged += (sender, value) => { _configuration.EnforceFullAlltalk = value; };
-        EnableDropMapWeapons.ValueChanged += (sender, value) => { _configuration.EnableDropMapWeapons = value; };
         EnableEntityStringPurge.ValueChanged += (sender, value) => { _configuration.EnableEntityStringPurge = value; };
         
         RegisterFakeConVars(typeof(ConVar));

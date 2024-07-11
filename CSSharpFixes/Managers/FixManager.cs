@@ -91,7 +91,6 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         _fixes.Add(new SubTickMovementFix());
         _fixes.Add(new MovementUnlockerFix());
         _fixes.Add(new FullAllTalkFix());
-        _fixes.Add(new DropMapWeaponsFix());
         _fixes.Add(new EntityStringPurgeFix());
     }
     

@@ -36,7 +36,6 @@ namespace CSSharpFixes.Config
         private bool disableSubTickMovement = false;
         private bool enableMovementUnlocker = false;
         private bool enforceFullAlltalk = false;
-        private bool enableDropMapWeapons = false;
         private bool enableEntityStringPurge = false;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -191,19 +190,6 @@ namespace CSSharpFixes.Config
                 if (enforceFullAlltalk != value)
                 {
                     enforceFullAlltalk = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool EnableDropMapWeapons
-        {
-            get => enableDropMapWeapons;
-            set
-            {
-                if (enableDropMapWeapons != value)
-                {
-                    enableDropMapWeapons = value;
                     OnPropertyChanged();
                 }
             }
