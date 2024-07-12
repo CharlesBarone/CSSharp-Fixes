@@ -32,4 +32,6 @@ with command handling in CS#. Additionally, I could have forked cs2fixes and kep
 would have had the problem of maintaining a C++ plugin for both windows and linux, whereas with CS# I can just compile
 one plugin that is platform-agnostic, thus lowering the maintenance burden. Additionally, there are more developers
 making plugins for CS# than there are for MetaMod, so I figured it would be easier for others to assist in maintaining
-the plugin if it were written in C#.
+the plugin if it were written in C#. Also, it should be noted that unlike CS2Fixes, this plugin is not made for the
+Zombie Escape gamemode, thus it doesn't have the features that are specific to that gamemode or that I felt should
+probably be implemented in their own plugins like administrative features and ZE specific features.
