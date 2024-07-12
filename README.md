@@ -7,7 +7,7 @@ CS# plugins. (Unlike cs2fixes, every feature in this plugin is optional and can 
 ## Features
 
 - Water Fix: Fixes being stuck to the floor underwater, allowing players to swim up.
-- trigger_push Fix:Reverts trigger_push behaviour to that seen in CS:GO.
+- trigger_push Fix: Reverts trigger_push behaviour to that seen in CS:GO.
 - CPhysBox Use Patch: Fixes CPhysBox use. Makes func_physbox pass itself as the caller in OnPlayerUse.
 - No Block: Prevent players from blocking each other. (Sets debris collision on every player).
 - Disable Subtick Movement: Disables sub-tick movement.
