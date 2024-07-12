@@ -24,7 +24,7 @@ namespace CSSharpFixes;
 public partial class CSSharpFixes
 {
     public FakeConVar<bool> EnableWaterFix = new("css_fixes_water_fix", "Fixes being stuck to the floor underwater, allowing players to swim up.", true);
-    public FakeConVar<bool> EnableTriggerPushFix = new("css_fixes_trigger_push_fix", "Reverts trigger_push behaviour to that seen in CS:GO.", true);
+    public FakeConVar<bool> EnableTriggerPushFix = new("css_fixes_trigger_push_fix", "Reverts trigger_push behaviour to that seen in CS:GO.", false);
     public FakeConVar<bool> EnableCPhysBoxUseFix = new("css_fixes_cphys_box_use_fix", "Fixes CPhysBox use. Make func_physbox pass itself as the caller in OnPlayerUse.", false);
     //public FakeConVar<bool> EnableNavmeshLookupLagFix = new("css_fixes_navmesh_lookup_lag_fix", "Some maps with built navmeshes would cause tremendous lag.", false); // Commented out since it seems to cause crashes every time I test it...
     public FakeConVar<bool> EnableNoBlock = new("css_fixes_no_block", "Prevent players from blocking each other. (Sets debris collision on every player).", false);

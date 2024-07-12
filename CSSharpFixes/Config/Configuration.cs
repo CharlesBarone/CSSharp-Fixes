@@ -27,7 +27,7 @@ namespace CSSharpFixes.Config
     public class Configuration(ILogger<CSSharpFixes> logger, FixManager fixManager) : INotifyPropertyChanged
     {
         private bool enableWaterFix = true;
-        private bool enableTriggerPushFix = true;
+        private bool enableTriggerPushFix = false;
         private bool enableCPhysBoxUseFix = false;
         //private bool enableNavmeshLookupLagFix = false; // Commented out since it seems to cause crashes every time I test it...
         private bool enableNoBlock = false;
