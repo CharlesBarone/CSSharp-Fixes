@@ -18,11 +18,11 @@ CS# plugins. (Unlike cs2fixes, every feature in this plugin is optional and can 
 
 - css_fixes_water_fix: Enable or disable the water fix. Default is 1.
 - css_fixes_trigger_push_fix: Enable or disable the trigger_push fix. Default is 0.
-- css_fixes_cphysbox_use_patch: Enable or disable the CPhysBox use patch. Default is 0.
+- css_fixes_cphys_box_use_fix: Enable or disable the CPhysBox use patch. Default is 0.
 - css_fixes_no_block: Enable or disable the no block feature. Default is 0.
-- css_fixes_disable_subtick_movement: Enable or disable the disable subtick movement feature. Default is 0.
-- css_fixes_movement_unlocker: Enable or disable the movement unlocker feature. Default is 0.
-- css_fixes_force_full_alltalk: Enable or disable the force full alltalk feature. Default is 0.
+- css_fixes_disable_sub_tick_movement: Enable or disable the disable subtick movement feature. Default is 0.
+- css_fixes_enable_movement_unlocker: Enable or disable the movement unlocker feature. Default is 0.
+- css_fixes_enforce_full_alltalk: Enable or disable the force full alltalk feature. Default is 0.
 
 ## Why make this plugin when CS2Fixes already exists?
 
