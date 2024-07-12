@@ -48,6 +48,8 @@ public class NoBlockFix: BaseFix, ITickable
     
     public void OnTick(List<CCSPlayerController> players)
     {
+        if(!Enabled) return;
+        
         foreach(CCSPlayerController player in players)
         {
             ApplyNoBlock(player);
