@@ -75,7 +75,7 @@ public class ProcessUserCmdsHandler : PreHandler
         
         for (ulong cmdIdx = 0; cmdIdx < (ulong)numCommands; cmdIdx++)
         {
-            IntPtr cmdPtr = (IntPtr)((ulong)cmdsPtr + cmdIdx * 0x80);
+            IntPtr cmdPtr = (IntPtr)((ulong)cmdsPtr + cmdIdx * CUserCmd.Size());
             CUserCmd cUserCmd = new(cmdPtr);
             
             // if(cUserCmd.LeftHandDesired != null)
