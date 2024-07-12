@@ -87,7 +87,6 @@ public class FixManager(PatchManager patchManager, DetourManager detourManager, 
         // _fixes.Add(new NavmeshLookupLagFix()); // Commented out since it seems to cause crashes every time I test it...
         _fixes.Add(new NoBlockFix());
         _fixes.Add(new TeamMessagesFix());
-        _fixes.Add(new StopSoundFix());
         _fixes.Add(new SubTickMovementFix());
         _fixes.Add(new MovementUnlockerFix());
         _fixes.Add(new FullAllTalkFix());

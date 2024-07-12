@@ -29,7 +29,6 @@ public partial class CSSharpFixes
     //public FakeConVar<bool> EnableNavmeshLookupLagFix = new("css_fixes_navmesh_lookup_lag_fix", "Some maps with built navmeshes would cause tremendous lag.", false); // Commented out since it seems to cause crashes every time I test it...
     public FakeConVar<bool> EnableNoBlock = new("css_fixes_no_block", "Prevent players from blocking each other. (Sets debris collision on every player).", false);
     public FakeConVar<bool> DisableTeamMessages = new("css_fixes_disable_team_messages", "Disables team join messages.", false);
-    public FakeConVar<bool> EnableStopSound = new("css_fixes_enable_stop_sound", "Enables the stop sound command.", false);
     public FakeConVar<bool> DisableSubTickMovement = new("css_fixes_disable_sub_tick_movement", "Disables sub-tick movement.", false);
     public FakeConVar<bool> EnableMovementUnlocker = new("css_fixes_enable_movement_unlocker", "Enables movement unlocker.", false);
     public FakeConVar<bool> EnforceFullAlltalk = new("css_fixes_enforce_full_alltalk", "Enforces sv_full_alltalk 1.", false);
@@ -43,7 +42,6 @@ public partial class CSSharpFixes
         //EnableNavmeshLookupLagFix.ValueChanged += (sender, value) => { _configuration.EnableNavmeshLookupLagFix = value; }; // Commented out since it seems to cause crashes every time I test it...
         EnableNoBlock.ValueChanged += (sender, value) => { _configuration.EnableNoBlock = value; };
         DisableTeamMessages.ValueChanged += (sender, value) => { _configuration.DisableTeamMessages = value; };
-        EnableStopSound.ValueChanged += (sender, value) => { _configuration.EnableStopSound = value; };
         DisableSubTickMovement.ValueChanged += (sender, value) => { _configuration.DisableSubTickMovement = value; };
         EnableMovementUnlocker.ValueChanged += (sender, value) => { _configuration.EnableMovementUnlocker = value; };
         EnforceFullAlltalk.ValueChanged += (sender, value) => { _configuration.EnforceFullAlltalk = value; };

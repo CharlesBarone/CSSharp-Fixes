@@ -32,7 +32,6 @@ namespace CSSharpFixes.Config
         //private bool enableNavmeshLookupLagFix = false; // Commented out since it seems to cause crashes every time I test it...
         private bool enableNoBlock = false;
         private bool disableTeamMessages = false;
-        private bool enableStopSound = false;
         private bool disableSubTickMovement = false;
         private bool enableMovementUnlocker = false;
         private bool enforceFullAlltalk = false;
@@ -138,19 +137,6 @@ namespace CSSharpFixes.Config
                 if (disableTeamMessages != value)
                 {
                     disableTeamMessages = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool EnableStopSound
-        {
-            get => enableStopSound;
-            set
-            {
-                if (enableStopSound != value)
-                {
-                    enableStopSound = value;
                     OnPropertyChanged();
                 }
             }
