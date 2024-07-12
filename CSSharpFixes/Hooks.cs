@@ -61,6 +61,10 @@ public partial class CSSharpFixes
     public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) => 
         _eventManager.OnPlayerTeam(@event, info);
     
+    [GameEventHandler]
+    public HookResult OnRoundStartPre(EventRoundPrestart @event, GameEventInfo info) => 
+        _eventManager.OnRoundStartPre(@event, info);
+    
     private void OnTick() => _fixManager.OnTick();
     
     private void OnMapEnd()

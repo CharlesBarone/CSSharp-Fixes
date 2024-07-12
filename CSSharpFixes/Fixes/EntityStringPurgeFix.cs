@@ -17,6 +17,10 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Events;
+using Microsoft.Extensions.Logging;
+
 namespace CSSharpFixes.Fixes;
 
 public class EntityStringPurgeFix: BaseFix
@@ -25,5 +29,19 @@ public class EntityStringPurgeFix: BaseFix
     {
         Name = "EntityStringPurgeFix";
         ConfigurationProperty = "EnableEntityStringPurge";
+        Events = new Dictionary<string, CSSharpFixes.GameEventHandler>
+        {
+            { "OnRoundStartPre", OnRoundStartPre }
+        };
+    }
+
+    public HookResult OnRoundStartPre(GameEvent @event, GameEventInfo info, ILogger<CSSharpFixes> logger)
+    {
+        if(@event is not EventRoundPrestart roundPrestartEvent) return HookResult.Continue;
+        logger.LogInformation("[CSSharpFixes][Fix][EntityStringPurgeFix][OnRoundStartPre()][NOT IMPLEMENTED]");
+        
+        //TODO: Finish implementing this. requires adding to C++ side of CounterStrikeSharp to finish.
+        
+        return HookResult.Continue;
     }
 }

@@ -39,6 +39,7 @@ public class EventManager
         _events.Add("OnRoundStart", new List<CSSharpFixes.GameEventHandler>());
         _events.Add("OnPlayerSpawn", new List<CSSharpFixes.GameEventHandler>());
         _events.Add("OnPlayerTeam", new List<CSSharpFixes.GameEventHandler>());
+        _events.Add("OnRoundStartPre", new List<CSSharpFixes.GameEventHandler>());
     }
     
     public void Stop()
@@ -98,4 +99,7 @@ public class EventManager
     
     public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info) =>
         ProcessEvent(@event, info, "OnPlayerTeam");
+    
+    public HookResult OnRoundStartPre(EventRoundPrestart @event, GameEventInfo info) =>
+        ProcessEvent(@event, info, "OnRoundStartPre");
 }

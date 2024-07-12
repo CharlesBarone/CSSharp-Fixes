@@ -17,6 +17,10 @@
     this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Events;
+using Microsoft.Extensions.Logging;
+
 namespace CSSharpFixes.Fixes;
 
 public class TeamMessagesFix: BaseFix
@@ -25,5 +29,18 @@ public class TeamMessagesFix: BaseFix
     {
         Name = "TeamMessagesFix";
         ConfigurationProperty = "DisableTeamMessages";
+        Events = new Dictionary<string, CSSharpFixes.GameEventHandler>
+        {
+            { "OnPlayerTeam", OnPlayerTeam },
+        };
+    }
+    
+    //TODO: This currently isn't working -_- ;(
+    public HookResult OnPlayerTeam(GameEvent @event, GameEventInfo info, ILogger<CSSharpFixes> logger)
+    {
+        if(@event is not EventPlayerTeam playerTeamEvent) return HookResult.Continue;
+        logger.LogInformation("[CSSharpFixes][Fix][TeamMessagesFix][OnPlayerTeam()]");
+        playerTeamEvent.Silent = true;
+        return HookResult.Handled;
     }
 }
